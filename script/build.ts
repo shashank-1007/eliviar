@@ -1,6 +1,6 @@
 import { build as esbuild } from "esbuild";
 import { build as viteBuild } from "vite";
-import { rm, readFile } from "fs/promises";
+import { rm, readFile, stat } from "fs/promises";
 
 // server deps to bundle to reduce openat(2) syscalls
 // which helps cold start times
@@ -33,26 +33,24 @@ const allowlist = [
 ];
 
 async function buildAll() {
-  await rm("dist", { recursive: true, force: true });
-
-  console.log("building client...");
   try {
+    console.log("[build] Starting build process...");
+    
+    await rm("dist", { recursive: true, force: true });
+    console.log("[build] Cleaned dist directory");
+
+    console.log("[build] Building client...");
     await viteBuild();
-    console.log("client build completed");
-  } catch (err) {
-    console.error("client build failed:", err);
-    throw err;
-  }
+    console.log("[build] Client build completed successfully");
 
-  console.log("building server...");
-  const pkg = JSON.parse(await readFile("package.json", "utf-8"));
-  const allDeps = [
-    ...Object.keys(pkg.dependencies || {}),
-    ...Object.keys(pkg.devDependencies || {}),
-  ];
-  const externals = allDeps.filter((dep) => !allowlist.includes(dep));
+    console.log("[build] Building server...");
+    const pkg = JSON.parse(await readFile("package.json", "utf-8"));
+    const allDeps = [
+      ...Object.keys(pkg.dependencies || {}),
+      ...Object.keys(pkg.devDependencies || {}),
+    ];
+    const externals = allDeps.filter((dep) => !allowlist.includes(dep));
 
-  try {
     await esbuild({
       entryPoints: ["server/index.ts"],
       platform: "node",
@@ -66,16 +64,22 @@ async function buildAll() {
       external: externals,
       logLevel: "info",
     });
-    console.log("server build completed");
-  } catch (err) {
-    console.error("server build failed:", err);
-    throw err;
-  }
+    console.log("[build] Server build completed successfully");
 
-  console.log("build complete - dist/index.cjs ready");
+    // Verify the output file exists
+    try {
+      const stats = await stat("dist/index.cjs");
+      console.log(`[build] Output file created: dist/index.cjs (${stats.size} bytes)`);
+    } catch (err) {
+      console.error("[build] ERROR: dist/index.cjs was not created!");
+      throw new Error("Build failed: output file not found");
+    }
+
+    console.log("[build] Build complete - ready for deployment");
+  } catch (err) {
+    console.error("[build] FATAL ERROR:", err);
+    process.exit(1);
+  }
 }
 
-buildAll().catch((err) => {
-  console.error(err);
-  process.exit(1);
-});
+buildAll();
