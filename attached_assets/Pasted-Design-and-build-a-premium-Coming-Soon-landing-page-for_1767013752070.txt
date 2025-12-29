@@ -1,0 +1,85 @@
+Design and build a premium “Coming Soon” landing page for a modern technology startup named “Eliviar”.
+
+STYLE & THEME:
+- Ultra-clean, minimalist, and modern design
+- Color palette: black, white, and neutral gray tones
+- Elegant typography (modern sans-serif, tech-oriented)
+- Smooth gradients using subtle gray shades only
+- Premium startup feel (Apple / Stripe / Linear inspired)
+
+MODES:
+- Include Light Mode and Dark Mode
+- Default to system preference
+- Smooth animated toggle switch (top-right corner)
+
+LAYOUT:
+- Full-screen hero section
+- Center-aligned content with generous whitespace
+- Responsive for desktop, tablet, and mobile
+- Max-width container for readability
+
+HERO SECTION:
+- Company name: “ELIVIAR” (bold, elegant)
+- Short tagline below (example: “Building intelligent software for tomorrow”)
+- Animated divider line or subtle motion underline
+- Soft entrance animation (fade + slide)
+
+ANIMATIONS:
+- Use subtle, smooth animations only (no flashy effects)
+- Page load animation (fade-in + slight upward movement)
+- Floating abstract background shapes (very subtle, slow motion)
+- Hover micro-interactions on buttons and inputs
+- Email input focus animation
+
+EMAIL CAPTURE:
+- Email subscription input field
+- Placeholder: “Enter your email to get early access”
+- Call-to-action button: “Notify Me” or “Join the Waitlist”
+- Clean validation (success / error states)
+- Success message animation after submission
+- Store emails securely (frontend-ready, backend placeholder)
+
+FEATURES SECTION (Below Fold):
+- 3–4 feature cards with minimal icons (abstract, no literal icons)
+- Example features:
+  • Scalable cloud-based solutions  
+  • AI-driven automation & workflows  
+  • Secure and performance-focused architecture  
+  • Designed for startups and enterprises
+- Cards with hover elevation + subtle shadow
+
+COUNTDOWN (Optional but recommended):
+- Optional launch countdown timer
+- Minimal numeric style
+- Smooth number transitions
+
+SOCIAL PROOF / BRAND TRUST:
+- Small text: “Launching soon. Stay connected.”
+- Social icons (LinkedIn, Twitter/X, GitHub) — minimal line icons
+- Footer with © Eliviar | All rights reserved
+
+ACCESSIBILITY & UX:
+- High contrast for readability
+- Keyboard accessible
+- Smooth scrolling
+- Fast load performance
+- SEO-friendly structure
+
+TECHNICAL REQUIREMENTS:
+- Clean semantic HTML structure
+- Modern CSS (Flexbox / Grid)
+- Optional TailwindCSS styling
+- JavaScript for animations and theme toggle
+- Dark mode via CSS variables
+- Email form ready for API integration
+- Optimized performance and accessibility
+
+TONE:
+- Confident, calm, and future-focused
+- No clutter, no stock photos
+- Abstract, timeless, professional
+
+OUTPUT:
+- Provide complete responsive UI
+- Include animation logic
+- Provide clean, production-ready code
