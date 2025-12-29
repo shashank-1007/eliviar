@@ -9,6 +9,15 @@ export async function registerRoutes(
   httpServer: Server,
   app: Express
 ): Promise<Server> {
+  // Quick uptime check (no DB hit) - useful for monitoring
+  app.get("/api/status", (_req, res) => {
+    res.status(200).json({
+      status: "ok",
+      uptime: Math.floor(process.uptime()),
+      timestamp: new Date().toISOString(),
+    });
+  });
+
   app.post(api.subscribers.create.path, async (req, res) => {
     try {
       const input = api.subscribers.create.input.parse(req.body);
