@@ -1,6 +1,11 @@
 import { build as esbuild } from "esbuild";
 import { build as viteBuild } from "vite";
 import { rm, readFile, stat } from "fs/promises";
+import { resolve } from "path";
+
+console.log("[build] Starting build process");
+console.log("[build] CWD:", process.cwd());
+console.log("[build] Node version:", process.version);
 
 // server deps to bundle to reduce openat(2) syscalls
 // which helps cold start times
@@ -34,16 +39,18 @@ const allowlist = [
 
 async function buildAll() {
   try {
-    console.log("[build] Starting build process...");
+    const distPath = resolve(process.cwd(), "dist");
+    console.log("[build] Target dist path:", distPath);
     
     await rm("dist", { recursive: true, force: true });
     console.log("[build] Cleaned dist directory");
 
-    console.log("[build] Building client...");
-    await viteBuild();
-    console.log("[build] Client build completed successfully");
+    console.log("[build] Building client with vite...");
+    const viteResult = await viteBuild();
+    console.log("[build] Vite result:", viteResult);
+    console.log("[build] Client build completed");
 
-    console.log("[build] Building server...");
+    console.log("[build] Building server with esbuild...");
     const pkg = JSON.parse(await readFile("package.json", "utf-8"));
     const allDeps = [
       ...Object.keys(pkg.dependencies || {}),
@@ -51,7 +58,7 @@ async function buildAll() {
     ];
     const externals = allDeps.filter((dep) => !allowlist.includes(dep));
 
-    await esbuild({
+    const esbuildResult = await esbuild({
       entryPoints: ["server/index.ts"],
       platform: "node",
       bundle: true,
@@ -64,20 +71,26 @@ async function buildAll() {
       external: externals,
       logLevel: "info",
     });
-    console.log("[build] Server build completed successfully");
+    console.log("[build] Esbuild result:", esbuildResult);
+    console.log("[build] Server bundle created");
 
     // Verify the output file exists
+    const outputPath = resolve(process.cwd(), "dist/index.cjs");
+    console.log("[build] Checking for output at:", outputPath);
+    
     try {
-      const stats = await stat("dist/index.cjs");
-      console.log(`[build] Output file created: dist/index.cjs (${stats.size} bytes)`);
+      const stats = await stat(outputPath);
+      console.log(`[build] SUCCESS: dist/index.cjs exists (${stats.size} bytes)`);
     } catch (err) {
-      console.error("[build] ERROR: dist/index.cjs was not created!");
-      throw new Error("Build failed: output file not found");
+      console.error("[build] FAILED: dist/index.cjs not found at", outputPath);
+      throw new Error("Build failed: output file not created");
     }
 
-    console.log("[build] Build complete - ready for deployment");
+    console.log("[build] Build completed successfully");
+    process.exit(0);
   } catch (err) {
-    console.error("[build] FATAL ERROR:", err);
+    console.error("[build] BUILD FAILED WITH ERROR:");
+    console.error(err);
     process.exit(1);
   }
 }
