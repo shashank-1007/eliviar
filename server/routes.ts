@@ -1,6 +1,7 @@
 import type { Express } from "express";
 import type { Server } from "http";
 import { storage } from "./storage";
+import { pool } from "./db";
 import { api } from "@shared/routes";
 import { z } from "zod";
 
@@ -27,6 +28,28 @@ export async function registerRoutes(
         });
       }
       throw err;
+    }
+  });
+
+  // Lightweight healthcheck that validates DB connectivity
+  app.get("/health", async (_req, res) => {
+    const started = Date.now();
+    try {
+      await pool.query("SELECT 1");
+      return res.status(200).json({
+        status: "ok",
+        db: "up",
+        responseTimeMs: Date.now() - started,
+        uptimeSec: Math.floor(process.uptime()),
+      });
+    } catch (err: any) {
+      return res.status(503).json({
+        status: "degraded",
+        db: "down",
+        error: err?.message ?? "unknown",
+        responseTimeMs: Date.now() - started,
+        uptimeSec: Math.floor(process.uptime()),
+      });
     }
   });
 
