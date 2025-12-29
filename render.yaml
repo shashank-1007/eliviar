@@ -4,8 +4,8 @@ services:
     env: node
     region: oregon
     plan: free
-    buildCommand: npm ci && npm run build
-    startCommand: npm run build && npm start
+    buildCommand: npm ci && npm run build && echo "Build complete, dist contents:" && ls -la dist/
+    startCommand: npm start
     envVars:
       - key: NODE_VERSION
         value: 22.16.0
