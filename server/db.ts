@@ -16,4 +16,10 @@ export const pool = new Pool({
   keepAlive: true,
   connectionTimeoutMillis: 10000,
 });
+
+// Prevent unhandled connection errors from crashing the app
+pool.on("error", (err) => {
+  console.error("Unexpected database pool error:", err);
+});
+
 export const db = drizzle(pool, { schema });
