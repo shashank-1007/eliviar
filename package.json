@@ -7,7 +7,7 @@
     "dev": "cross-env NODE_ENV=development tsx server/index.ts",
     "build": "tsx script/build.ts",
     "postinstall": "npm run build || echo 'Build failed but continuing'",
-    "start": "cross-env NODE_ENV=production node --enable-source-maps dist/index.cjs",
+    "start": "test -f dist/index.cjs && cross-env NODE_ENV=production node --enable-source-maps dist/index.cjs || (npm run build && cross-env NODE_ENV=production node --enable-source-maps dist/index.cjs)",
     "check": "tsc",
     "db:push": "drizzle-kit push"
   },
