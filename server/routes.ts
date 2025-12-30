@@ -20,16 +20,23 @@ export async function registerRoutes(
 
   app.post(api.subscribers.create.path, async (req, res) => {
     try {
+      console.log('[subscribe] Received request:', req.body);
       const input = api.subscribers.create.input.parse(req.body);
+      console.log('[subscribe] Validated input:', input);
       
       const existing = await storage.getSubscriberByEmail(input.email);
+      console.log('[subscribe] Existing subscriber:', existing);
+      
       if (existing) {
+        console.log('[subscribe] Email already subscribed');
         return res.status(409).json({ message: "Email already subscribed" });
       }
 
       const subscriber = await storage.createSubscriber(input);
+      console.log('[subscribe] Created subscriber:', subscriber);
       res.status(201).json(subscriber);
     } catch (err) {
+      console.error('[subscribe] Error:', err);
       if (err instanceof z.ZodError) {
         return res.status(400).json({
           message: err.errors[0].message,
