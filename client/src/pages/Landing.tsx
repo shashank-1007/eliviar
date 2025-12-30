@@ -165,7 +165,7 @@ export default function Landing() {
       {/* Footer */}
       <footer className="relative z-10 border-t border-border/40 py-8">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center text-sm text-muted-foreground">
-          <p>© 2024 ELIVIAR. All rights reserved.</p>
+          <p>© 2026 ELIVIAR. All rights reserved.</p>
           <div className="flex space-x-6 mt-4 md:mt-0">
             <a href="#" className="hover:text-foreground transition-colors">Privacy</a>
             <a href="#" className="hover:text-foreground transition-colors">Terms</a>
