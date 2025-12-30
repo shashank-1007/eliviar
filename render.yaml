@@ -4,12 +4,12 @@ services:
     env: node
     region: oregon
     plan: free
-    buildCommand: npm install && npm run build
+    buildCommand: npm install && npm run build && ls -la dist/
     startCommand: npm start
     envVars:
       - key: NODE_VERSION
         value: 22.16.0
       - key: DATABASE_URL
-        sync: false
+        value: postgresql://postgres:Abhi@@10092003@db.zwbjvikfovekoaucgnnq.supabase.co:5432/postgres
       - key: NODE_ENV
         value: production
